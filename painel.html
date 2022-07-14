@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Mensagens</title>
+</head>
+<body>
+    <div id="" style="text-align: center;"><h1>Painel Chat</h1></div>
+<div id="painel"></div>
+<script>
+    let chat = document.getElementById('painel');    
+    const socket = new WebSocket('ws://localhost:9990/chat');
+
+    // Ao receber mensagens do servidor
+    socket.addEventListener('message', function (event) {
+        // Deserializamos o objeto
+        const data = JSON.parse(event.data);
+        // Escrevemos no DOM
+        painel.insertAdjacentHTML('beforeend', "<p><b>" + data.nome + " diz: </b>" + data.mensagem + "</p><hr>");
+    });
+
+    // Ao enviar uma mensagem
+    input.addEventListener('keyup', function (event) {
+        if (event.keyCode === 13) {
+            // Objeto com os dados que serão trafegados
+            const data = {
+                nome: nome.value,
+                mensagem: this.value,
+            };
+
+            // Serializamos o objeto para json
+            socket.send(JSON.stringify(data));
+
+            this.value = '';
+        }
+    });
+</script>
+</body>
+</html>
